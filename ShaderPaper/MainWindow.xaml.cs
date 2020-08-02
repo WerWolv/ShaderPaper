@@ -22,12 +22,15 @@ namespace ShaderPaper
     {
         private List<ShaderPaper> ShaderPapers;
         private int CurrentShaderPaper = -1;
+        private readonly int[] PossibleFrameRates = { 5, 10, 15, 20, 30, 60 };
 
         private System.Windows.Forms.NotifyIcon TrayIcon;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            this.cboxFramerate.SelectedIndex = 2;
 
             this.TrayIcon = new System.Windows.Forms.NotifyIcon();
             this.TrayIcon.Text = "ShaderPaper";
@@ -116,7 +119,7 @@ namespace ShaderPaper
                 this.btnUse.Content = "Stop";
 
                 this.CurrentShaderPaper = this.cboxShaderPapers.SelectedIndex;
-                ShaderLoader.StartDaemon(this.ShaderPapers[this.CurrentShaderPaper].path);
+                ShaderLoader.StartDaemon(this.ShaderPapers[this.CurrentShaderPaper].path, this.PossibleFrameRates[this.cboxFramerate.SelectedIndex]);
             }
 
         }

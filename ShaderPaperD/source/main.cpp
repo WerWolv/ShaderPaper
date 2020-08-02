@@ -10,7 +10,6 @@
 #include <string>
 #include <thread>
 
-static constexpr double TargetFPS = 60.0;
 static constexpr UINT MsgCreateWorkerWBehindDesktopIcons = 0x052C;
 static constexpr bool OpenConsoleWindow = false;
 
@@ -81,8 +80,8 @@ void initGLContextFromWindow(HDC hDcWindow) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        puts("[*] No theme folder specified!\n");
+    if (argc < 3) {
+        puts("[*] Usage: shaderpaperd <shader papaer path> <target fps>\n");
         return EXIT_FAILURE;
     }
 
@@ -90,6 +89,14 @@ int main(int argc, char *argv[]) {
         ShowWindow(GetConsoleWindow(), SW_HIDE);
 
     const std::string themeFolder = argv[1];
+    const double targetFps = std::strtoul(argv[2], nullptr, 10);
+
+    if (targetFps < 1) {
+        puts("[*] Invalid FPS specified. Must be >= 1");
+        return EXIT_FAILURE;
+    }
+
+
     const HWND hWndWallpaper = getWallpaperWindow();
     const HDC hDc = GetDC(hWndWallpaper);
 
@@ -185,7 +192,7 @@ int main(int argc, char *argv[]) {
         wglSwapLayerBuffers(hDc, WGL_SWAP_MAIN_PLANE);
 
         // Limit FPS
-        std::this_thread::sleep_until(frameStart + std::chrono::milliseconds((long long)(1'000 / TargetFPS)));
+        std::this_thread::sleep_until(frameStart + std::chrono::milliseconds((long long)(1'000 / targetFps)));
         frameEnd = std::chrono::high_resolution_clock::now();
     }
 

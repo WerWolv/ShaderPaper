@@ -47,7 +47,17 @@ namespace ShaderPaper
         {
             var shaderPapers = new List<ShaderPaper>();
 
-            var shaderPaperDirectories = Directory.GetDirectories(ShaderPaperPath);
+            string[] shaderPaperDirectories;
+
+            try
+            {
+                shaderPaperDirectories = Directory.GetDirectories(ShaderPaperPath);
+            } catch
+            {
+                return shaderPapers;
+            }
+            
+            
             foreach (var folder in shaderPaperDirectories)
             {
                 string shaderPaperConfigFile = folder + @"\shaderpaper.json";
@@ -77,11 +87,11 @@ namespace ShaderPaper
             return shaderPapers;
         }
 
-        public static void StartDaemon(string shaderPaperPath)
+        public static void StartDaemon(string shaderPaperPath, int fps)
         {
             try
             {
-                shaderPaperDProcess = Process.Start("ShaderPaperD.exe", "\"" + shaderPaperPath + "\"");
+                shaderPaperDProcess = Process.Start("ShaderPaperD.exe", "\"" + shaderPaperPath + "\" " + fps.ToString());
             } catch
             {
 
